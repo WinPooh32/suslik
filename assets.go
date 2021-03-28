@@ -223,8 +223,9 @@ func NewSprite(region *Region, x, y, scale float32) Sprite {
 	}
 }
 
-func (s *Sprite) Render(batch *Batch) {
-	batch.Draw(s.Region, s.Position.X, s.Position.Y, s.Anchor.X, s.Anchor.Y, s.Scale.X, s.Scale.Y, s.Rotation, s.Color, s.Alpha)
+func (s *Sprite) Render(batch *Batch, cam *Camera) {
+	var position = cam.TranslateToScreen(s.Position)
+	batch.Draw(s.Region, position.X, position.Y, s.Anchor.X, s.Anchor.Y, s.Scale.X*cam.Zoom, s.Scale.Y*cam.Zoom, s.Rotation, s.Color, s.Alpha)
 }
 
 func (s *Sprite) Width() float32 {
