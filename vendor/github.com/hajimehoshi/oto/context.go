@@ -78,7 +78,7 @@ func NewContext(sampleRate, channelNum, bitDepthInBytes, bufferSizeInBytes int) 
 	c := &Context{
 		driverWriter: dw,
 		mux:          mux.New(channelNum, bitDepthInBytes),
-		errCh:        make(chan error, 1),
+		errCh:        make(chan error),
 	}
 	theContext = c
 	go func() {
@@ -86,14 +86,15 @@ func NewContext(sampleRate, channelNum, bitDepthInBytes, bufferSizeInBytes int) 
 			c.errCh <- err
 		}
 		close(c.errCh)
-		c.Close()
 	}()
 	return c, nil
 }
 
 // NewPlayer creates a new, ready-to-use Player belonging to the Context.
 func (c *Context) NewPlayer() *Player {
-	return newPlayer(c)
+	p := newPlayer(c)
+	c.mux.AddSource(p.r)
+	return p
 }
 
 // Close closes the Context and its Players and frees any resources associated with it. The Context is no longer
@@ -106,22 +107,16 @@ func (c *Context) Close() error {
 	if err := c.driverWriter.Close(); err != nil {
 		return err
 	}
-	for _, r := range c.mux.Sources() {
-		if err := r.(io.Closer).Close(); err != nil {
-			return err
-		}
-	}
 	if err := c.mux.Close(); err != nil {
 		return err
 	}
-	return nil
+	return <-c.errCh
 }
 
 type tryWriteCloser interface {
 	io.Closer
 
 	TryWrite([]byte) (int, error)
-	tryWriteCanReturnWithoutWaiting() bool
 }
 
 type driverWriter struct {
@@ -147,13 +142,11 @@ func (d *driverWriter) Write(buf []byte) (int, error) {
 			return written, err
 		}
 		buf = buf[n:]
-		if d.driver.tryWriteCanReturnWithoutWaiting() {
-			// When not all buf is written, the underlying buffer is full.
-			// Mitigate the busy loop by sleeping (#10).
-			if len(buf) > 0 {
-				t := time.Second * time.Duration(d.bufferSize) / time.Duration(d.bytesPerSecond) / 8
-				time.Sleep(t)
-			}
+		// When not all buf is written, the underlying buffer is full.
+		// Mitigate the busy loop by sleeping (#10).
+		if len(buf) > 0 {
+			t := time.Second * time.Duration(d.bufferSize) / time.Duration(d.bytesPerSecond) / 8
+			time.Sleep(t)
 		}
 	}
 	return written, nil

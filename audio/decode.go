@@ -13,6 +13,12 @@ import (
 
 var errNoDec = errors.New("decoder not found")
 
+type closerSeekerReader interface {
+	io.Reader
+	io.Seeker
+	io.Closer
+}
+
 // Decode decodes raw data according to file extension.
 // Supported decoders: wav(.wav), vorbis(.ogg), mp3(.mp3).
 func Decode(data []byte, ext string) ([]byte, error) {
@@ -27,7 +33,7 @@ func Decode(data []byte, ext string) ([]byte, error) {
 	return decoded, nil
 }
 
-func decode(data []byte, ext string) (io.ReadSeekCloser, error) {
+func decode(data []byte, ext string) (closerSeekerReader, error) {
 	r := newReadSeekCloser(data)
 	switch ext {
 	case ".wav":
@@ -47,6 +53,6 @@ type nopCloserSeekerReader struct {
 
 func (r nopCloserSeekerReader) Close() error { return nil }
 
-func newReadSeekCloser(data []byte) io.ReadSeekCloser {
+func newReadSeekCloser(data []byte) *nopCloserSeekerReader {
 	return &nopCloserSeekerReader{bytes.NewReader(data)}
 }

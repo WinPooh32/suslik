@@ -42,6 +42,11 @@ func copyFloat32sToJS(v js.Value, s []float32) {
 	h.Cap *= 4
 	bs := *(*[]byte)(unsafe.Pointer(h))
 
-	js.CopyBytesToJS(v, bs)
+	a := js.Global().Get("Uint8Array").New(v.Get("buffer"))
+	js.CopyBytesToJS(a, bs)
 	runtime.KeepAlive(s)
+}
+
+func isAudioWorkletAvailable() bool {
+	return true
 }

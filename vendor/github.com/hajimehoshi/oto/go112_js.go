@@ -12,14 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// +build !js js,wasm
+// +build !go1.13 !wasm
 
 package oto
 
 import (
-	"io"
+	"syscall/js"
 )
 
-func pipe() (io.ReadCloser, io.WriteCloser) {
-	return io.Pipe()
+func float32SliceToTypedArray(s []float32) (js.Value, func()) {
+	// Note that TypedArrayOf cannot work correcly on Wasm.
+	// See https://github.com/golang/go/issues/31980
+
+	a := js.TypedArrayOf(s)
+	return a.Value, func() { a.Release() }
+}
+
+func copyFloat32sToJS(v js.Value, s []float32) {
+	panic("oto: copyFloat32sToJS is not implemented on Go 1.12 or older")
+}
+
+func isAudioWorkletAvailable() bool {
+	// As copyFloat32sToJS is not implemented on Go 1.12 or older, Audio Worklet is not available.
+	return false
 }

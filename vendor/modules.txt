@@ -34,7 +34,7 @@ github.com/hajimehoshi/go-mp3/internal/huffman
 github.com/hajimehoshi/go-mp3/internal/imdct
 github.com/hajimehoshi/go-mp3/internal/maindata
 github.com/hajimehoshi/go-mp3/internal/sideinfo
-# github.com/hajimehoshi/oto v0.7.1
+# github.com/hajimehoshi/oto v0.6.1
 ## explicit
 github.com/hajimehoshi/oto
 github.com/hajimehoshi/oto/internal/mux

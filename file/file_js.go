@@ -1,7 +1,12 @@
 // +build js
+
 package file
 
-import "github.com/gopherjs/gopherjs/js"
+import (
+	"fmt"
+
+	"github.com/gopherjs/gopherjs/js"
+)
 
 func ReadAll(name string) ([]byte, error) {
 	ch := make(chan error, 1)

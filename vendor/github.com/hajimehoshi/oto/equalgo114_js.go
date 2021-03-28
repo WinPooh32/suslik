@@ -12,18 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// +build darwin,!ios
-// +build !js
+// +build go1.14
 
 package oto
 
-// #import <AudioToolbox/AudioToolbox.h>
-import "C"
+import (
+	"syscall/js"
+)
 
-func setNotificationHandler(driver *driver) {
-	// Do nothing
-}
-
-func componentSubType() C.OSType {
-	return C.kAudioUnitSubType_DefaultOutput
+func valueEqual(a, b js.Value) bool {
+	return a.Equal(b)
 }

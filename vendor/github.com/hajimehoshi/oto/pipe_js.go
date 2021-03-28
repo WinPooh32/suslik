@@ -13,7 +13,6 @@
 // limitations under the License.
 
 // +build js
-// +build !wasm
 
 package oto
 
