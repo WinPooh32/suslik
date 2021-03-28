@@ -78,7 +78,7 @@ func (l *Loader) Load(onFinish func()) {
 
 			decoded, err := audio.Decode(data, r.kind)
 			if err != nil {
-				log.Printf("load sound: %s: %s", r.url, err)
+				log.Printf("decode sound: %s: %s", r.url, err)
 				continue
 			}
 
@@ -211,10 +211,10 @@ type Sprite struct {
 	Region   *Region
 }
 
-func NewSprite(region *Region, x, y float32) Sprite {
+func NewSprite(region *Region, x, y, scale float32) Sprite {
 	return Sprite{
 		Position: Point{x, y},
-		Scale:    Point{1, 1},
+		Scale:    Point{scale, scale},
 		Anchor:   Point{0, 0},
 		Rotation: 0,
 		Color:    0xffffff,
