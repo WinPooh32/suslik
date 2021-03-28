@@ -12,8 +12,6 @@ import (
 	"github.com/ajhager/webgl"
 	"github.com/gopherjs/gopherjs/js"
 
-	"github.com/WinPooh32/suslik/audio"
-	"github.com/WinPooh32/suslik/audio/decode/wav"
 	"github.com/WinPooh32/suslik/file"
 )
 
@@ -69,21 +67,23 @@ func run(title string, width, height int, fullscreen bool) {
 		rect := canvas.Call("getBoundingClientRect")
 		x := float32((ev.Get("clientX").Int() - rect.Get("left").Int()))
 		y := float32((ev.Get("clientY").Int() - rect.Get("top").Int()))
-		responder.Mouse(x, y, MOVE)
+		responder.Mouse(x, y, 0, MOVE)
 	}, false)
 
 	canvas.Call("addEventListener", "mousedown", func(ev *js.Object) {
 		rect := canvas.Call("getBoundingClientRect")
 		x := float32((ev.Get("clientX").Int() - rect.Get("left").Int()))
 		y := float32((ev.Get("clientY").Int() - rect.Get("top").Int()))
-		responder.Mouse(x, y, PRESS)
+		btn := ev.Get("which").Int()
+		responder.Mouse(x, y, toMouseBtn(btn), PRESS)
 	}, false)
 
 	canvas.Call("addEventListener", "mouseup", func(ev *js.Object) {
 		rect := canvas.Call("getBoundingClientRect")
 		x := float32((ev.Get("clientX").Int() - rect.Get("left").Int()))
 		y := float32((ev.Get("clientY").Int() - rect.Get("top").Int()))
-		responder.Mouse(x, y, RELEASE)
+		btn := ev.Get("which").Int()
+		responder.Mouse(x, y, toMouseBtn(btn), RELEASE)
 	}, false)
 
 	canvas.Call("addEventListener", "touchstart", func(ev *js.Object) {
@@ -92,7 +92,7 @@ func run(title string, width, height int, fullscreen bool) {
 			touch := ev.Get("changedTouches").Index(i)
 			x := float32((touch.Get("clientX").Int() - rect.Get("left").Int()))
 			y := float32((touch.Get("clientY").Int() - rect.Get("top").Int()))
-			responder.Mouse(x, y, PRESS)
+			responder.Mouse(x, y, 0, PRESS)
 		}
 	}, false)
 
@@ -102,7 +102,7 @@ func run(title string, width, height int, fullscreen bool) {
 			touch := ev.Get("changedTouches").Index(i)
 			x := float32((touch.Get("clientX").Int() - rect.Get("left").Int()))
 			y := float32((touch.Get("clientY").Int() - rect.Get("top").Int()))
-			responder.Mouse(x, y, RELEASE)
+			responder.Mouse(x, y, 0, RELEASE)
 		}
 	}, false)
 
@@ -112,7 +112,7 @@ func run(title string, width, height int, fullscreen bool) {
 			touch := ev.Get("changedTouches").Index(i)
 			x := float32((touch.Get("clientX").Int() - rect.Get("left").Int()))
 			y := float32((touch.Get("clientY").Int() - rect.Get("top").Int()))
-			responder.Mouse(x, y, PRESS)
+			responder.Mouse(x, y, 0, PRESS)
 		}
 	}, false)
 
@@ -122,7 +122,7 @@ func run(title string, width, height int, fullscreen bool) {
 			touch := ev.Get("changedTouches").Index(i)
 			x := float32((touch.Get("clientX").Int() - rect.Get("left").Int()))
 			y := float32((touch.Get("clientY").Int() - rect.Get("top").Int()))
-			responder.Mouse(x, y, MOVE)
+			responder.Mouse(x, y, 0, MOVE)
 		}
 	}, false)
 
@@ -179,6 +179,18 @@ func exit() {
 
 func toPx(n int) string {
 	return strconv.FormatInt(int64(n), 10) + "px"
+}
+
+func toMouseBtn(b int) Mouse {
+	switch b {
+	case 1:
+		return LEFT
+	case 2:
+		return RIGHT
+	case 3:
+		return MIDDLE
+	}
+	return 0
 }
 
 func rafPolyfill() {
@@ -263,7 +275,7 @@ func loadJson(r Resource) (string, error) {
 }
 
 func loadSound(r Resource) ([]byte, error) {
-	return file.ReadAll(r.url), nil
+	return file.ReadAll(r.url)
 }
 
 type ImageObject struct {

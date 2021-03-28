@@ -3,16 +3,22 @@ package suslik
 type Action int
 type Key int
 type Modifier int
+type Mouse int
 
 var (
 	MOVE    = Action(0)
 	PRESS   = Action(1)
 	RELEASE = Action(2)
 	REPEAT  = Action(3)
+
 	SHIFT   = Modifier(0x0001)
 	CONTROL = Modifier(0x0002)
 	ALT     = Modifier(0x0004)
 	SUPER   = Modifier(0x0008)
+
+	LEFT   = Mouse(1)
+	MIDDLE = Mouse(2)
+	RIGHT  = Mouse(3)
 )
 
 var (

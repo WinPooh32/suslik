@@ -74,15 +74,26 @@ func run(title string, width, height int, fullscreen bool) {
 	})
 
 	window.SetCursorPosCallback(func(window *glfw.Window, x, y float64) {
-		responder.Mouse(float32(x), float32(y), MOVE)
+		responder.Mouse(float32(x), float32(y), 0, MOVE)
 	})
 
 	window.SetMouseButtonCallback(func(window *glfw.Window, b glfw.MouseButton, a glfw.Action, m glfw.ModifierKey) {
 		x, y := window.GetCursorPos()
+
+		var mb Mouse
+		switch b {
+		case glfw.MouseButtonLeft:
+			mb = LEFT
+		case glfw.MouseButtonMiddle:
+			mb = MIDDLE
+		case glfw.MouseButtonRight:
+			mb = RIGHT
+		}
+
 		if a == glfw.Press {
-			responder.Mouse(float32(x), float32(y), PRESS)
+			responder.Mouse(float32(x), float32(y), mb, PRESS)
 		} else {
-			responder.Mouse(float32(x), float32(y), RELEASE)
+			responder.Mouse(float32(x), float32(y), mb, RELEASE)
 		}
 	})
 

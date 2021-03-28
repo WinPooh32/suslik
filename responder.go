@@ -7,7 +7,7 @@ type Responder interface {
 	Setup()
 	Close()
 	Update(dt float32)
-	Mouse(x, y float32, action Action)
+	Mouse(x, y float32, button Mouse, action Action)
 	Scroll(amount float32)
 	Key(key Key, modifier Modifier, action Action)
 	Type(char rune)
