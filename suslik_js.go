@@ -23,7 +23,7 @@ func init() {
 var canvas *js.Object
 var keysDown map[int]bool
 
-func run(title string, width, height int, fullscreen bool) {
+func run(title string, width, height int, fullscreen bool, hideCursor bool) {
 	document := js.Global.Get("document")
 	canvas = document.Call("createElement", "canvas")
 
@@ -51,6 +51,11 @@ func run(title string, width, height int, fullscreen bool) {
 	})
 
 	canvas.Get("style").Set("display", "block")
+
+	if hideCursor {
+		canvas.Get("style").Set("cursor", "none")
+	}
+
 	winWidth := js.Global.Get("innerWidth").Int()
 	winHeight := js.Global.Get("innerHeight").Int()
 	if fullscreen {

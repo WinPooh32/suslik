@@ -9,11 +9,11 @@ var (
 	gl        *webgl.Context
 )
 
-func Open(title string, width, height int, fullscreen bool, r Responder) {
+func Open(title string, width, height int, fullscreen bool, hideCursor bool, r Responder) {
 	responder = r
 	Time = NewClock()
 	Files = NewLoader()
-	run(title, width, height, fullscreen)
+	run(title, width, height, fullscreen, hideCursor)
 }
 
 func SetBg(color uint32) {

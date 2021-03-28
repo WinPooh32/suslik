@@ -34,7 +34,7 @@ func init() {
 	runtime.LockOSThread()
 }
 
-func run(title string, width, height int, fullscreen bool) {
+func run(title string, width, height int, fullscreen bool, hideCursor bool) {
 	fatalErr(glfw.Init())
 
 	monitor := glfw.GetPrimaryMonitor()
@@ -57,6 +57,10 @@ func run(title string, width, height int, fullscreen bool) {
 
 	if !fullscreen {
 		window.SetPos((mode.Width-width)/2, (mode.Height-height)/2)
+	}
+
+	if hideCursor {
+		window.SetInputMode(glfw.CursorMode, glfw.CursorHidden)
 	}
 
 	windowWidth, windowHeight = window.GetSize()
