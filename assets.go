@@ -2,10 +2,10 @@ package suslik
 
 import (
 	"log"
-	"math"
 	"path"
 
 	"github.com/WinPooh32/suslik/audio"
+	"github.com/WinPooh32/suslik/math"
 	"github.com/ajhager/webgl"
 )
 
@@ -128,8 +128,8 @@ func NewRegion(texture *Texture, x, y, w, h int) *Region {
 	v := float32(y) * invTexHeight
 	u2 := float32(x+w) * invTexWidth
 	v2 := float32(y+h) * invTexHeight
-	width := float32(math.Abs(float64(w)))
-	height := float32(math.Abs(float64(h)))
+	width := float32(math.Abs(float32(w)))
+	height := float32(math.Abs(float32(h)))
 
 	return &Region{texture, u, v, u2, v2, width, height}
 }
