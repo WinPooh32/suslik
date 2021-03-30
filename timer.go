@@ -9,6 +9,10 @@ type Timer struct {
 	Run            bool
 }
 
+func MakeTimer() Timer {
+	return Timer{}
+}
+
 func (t *Timer) Start() {
 	t.ActiveDuration += t.InactiveBegin.Sub(t.Begin)
 	t.Begin = time.Now()
