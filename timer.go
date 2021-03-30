@@ -20,6 +20,12 @@ func (t *Timer) Stop() {
 	t.Run = false
 }
 
+func (t *Timer) Reset() {
+	t.ActiveDuration = 0
+	t.Begin = time.Now()
+	t.InactiveBegin = t.Begin
+}
+
 func (t *Timer) Elapsed() time.Duration {
 	if t.Run {
 		return time.Since(t.Begin) + t.ActiveDuration
