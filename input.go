@@ -6,6 +6,7 @@ type Modifier int
 type Mouse int
 
 var (
+	NONE    = Action(-1)
 	MOVE    = Action(0)
 	PRESS   = Action(1)
 	RELEASE = Action(2)
