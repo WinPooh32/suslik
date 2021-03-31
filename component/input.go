@@ -2,7 +2,13 @@ package component
 
 import "github.com/WinPooh32/suslik"
 
-var keyboardState [256]byte
+var (
+	keyboardState [256]byte
+	mouseX        float32
+	mouseY        float32
+	mouseButton   suslik.Mouse
+	mouseAction   suslik.Action
+)
 
 type Bind struct {
 	Action suslik.Action
@@ -11,20 +17,11 @@ type Bind struct {
 
 type Input struct {
 	Actions map[string]Bind
-
-	mouseX      float32
-	mouseY      float32
-	mouseButton suslik.Mouse
-	mouseAction suslik.Action
 }
 
 func MakeInput() Input {
 	return Input{
-		Actions:     map[string]Bind{},
-		mouseX:      0.0,
-		mouseY:      0.0,
-		mouseButton: 0,
-		mouseAction: 0,
+		Actions: map[string]Bind{},
 	}
 }
 
@@ -48,21 +45,21 @@ func (input *Input) GetAxis(name string) float32 {
 }
 
 func (input *Input) GetMouse(name string) (x, y float32, button suslik.Mouse, action suslik.Action) {
-	return input.mouseX, input.mouseY, input.mouseButton, input.mouseAction
+	return mouseX, mouseY, mouseButton, mouseAction
 }
 
 func (input *Input) Update(dt float32) {
 	for i := range keyboardState {
 		keyboardState[i] = byte(suslik.NONE)
 	}
-	input.mouseAction = suslik.NONE
+	mouseAction = suslik.NONE
 }
 
 func (input *Input) Mouse(x, y float32, button suslik.Mouse, action suslik.Action) {
-	input.mouseX = x
-	input.mouseY = y
-	input.mouseButton = button
-	input.mouseAction = action
+	mouseX = x
+	mouseY = y
+	mouseButton = button
+	mouseAction = action
 }
 
 func (input *Input) Scroll(amount float32) {
