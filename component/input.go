@@ -1,9 +1,11 @@
 package component
 
-import "github.com/WinPooh32/suslik"
+import (
+	"github.com/WinPooh32/suslik"
+)
 
 var (
-	keyboardState [256]byte
+	keyboardState [512]byte
 	mouseX        float32
 	mouseY        float32
 	mouseButton   suslik.Key
@@ -15,23 +17,29 @@ type Bind struct {
 	Keys   []suslik.Key
 }
 
+type BindAxis struct {
+	Value float32
+	Key   suslik.Key
+}
+
 type Input struct {
 	Actions map[string]Bind
+	Axes    map[string][]BindAxis
 }
 
 func MakeInput() Input {
 	return Input{
 		Actions: map[string]Bind{},
+		Axes:    map[string][]BindAxis{},
 	}
 }
 
-func (input *Input) MapAction(name string, action suslik.Action, keys ...suslik.Key) {
-	input.Actions[name] = Bind{action, keys}
+func (input *Input) MapAction(name string, bind Bind) {
+	input.Actions[name] = bind
 }
 
-func (input *Input) MapAxis(name string) {
-	// TODO
-	// return 0
+func (input *Input) MapAxis(name string, binds ...BindAxis) {
+	input.Axes[name] = binds
 }
 
 func (input *Input) Action(name string) bool {
@@ -45,8 +53,15 @@ func (input *Input) Action(name string) bool {
 }
 
 func (input *Input) Axis(name string) float32 {
-	// TODO
-	return 0
+	var sum float32
+	var binds = input.Axes[name]
+
+	for _, b := range binds {
+		if keyboardState[b.Key] != byte(suslik.NONE) {
+			sum += b.Value
+		}
+	}
+	return sum
 }
 
 func (input *Input) MouseState(name string) (x, y float32, button suslik.Key, action suslik.Action) {
@@ -55,7 +70,12 @@ func (input *Input) MouseState(name string) (x, y float32, button suslik.Key, ac
 
 func (input *Input) Update(dt float32) {
 	for i := range keyboardState {
-		keyboardState[i] = byte(suslik.NONE)
+		switch keyboardState[i] {
+		case byte(suslik.PRESS):
+			keyboardState[i] = byte(suslik.REPEAT)
+		case byte(suslik.RELEASE):
+			keyboardState[i] = byte(suslik.NONE)
+		}
 	}
 	mouseAction = suslik.NONE
 }
