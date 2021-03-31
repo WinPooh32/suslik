@@ -5,11 +5,11 @@ type Key int
 type Modifier int
 
 var (
-	NONE    = Action(-1)
-	MOVE    = Action(0)
-	PRESS   = Action(1)
-	RELEASE = Action(2)
-	REPEAT  = Action(3)
+	NONE    = Action(0)
+	MOVE    = Action(1)
+	PRESS   = Action(2)
+	RELEASE = Action(3)
+	REPEAT  = Action(4)
 
 	SHIFT   = Modifier(0x0001)
 	CONTROL = Modifier(0x0002)
