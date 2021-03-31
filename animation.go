@@ -12,8 +12,8 @@ type Animation struct {
 	Timer       Timer
 }
 
-func MakeAnimation(frames int, delay time.Duration) Animation {
-	return Animation{
+func NewAnimation(frames int, delay time.Duration) *Animation {
+	return &Animation{
 		TotalFrames: frames,
 		Current:     0,
 		Delay:       delay,
@@ -28,16 +28,20 @@ func (anim *Animation) Play(num int) {
 	anim.Playing = true
 }
 
-func (anim *Animation) Stop(num int) {
+func (anim *Animation) Stop() {
 	anim.Timer.Stop()
 	anim.Playing = false
 }
 
 func (anim *Animation) NextFrame() int {
-	if anim.Timer.Elapsed() > anim.Delay {
+	if anim.Playing && anim.Timer.Elapsed() > anim.Delay {
 		anim.Timer.Reset()
 		anim.Current = (anim.Current + 1) % anim.TotalFrames
 	}
+	return anim.Current
+}
+
+func (anim *Animation) GetFrame() int {
 	return anim.Current
 }
 
