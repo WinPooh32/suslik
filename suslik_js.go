@@ -186,14 +186,14 @@ func toPx(n int) string {
 	return strconv.FormatInt(int64(n), 10) + "px"
 }
 
-func toMouseBtn(b int) Mouse {
+func toMouseBtn(b int) Key {
 	switch b {
 	case 1:
-		return LEFT
+		return MouseLeft
 	case 2:
-		return RIGHT
+		return MouseRight
 	case 3:
-		return MIDDLE
+		return MouseMiddle
 	}
 	return 0
 }

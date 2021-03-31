@@ -6,7 +6,7 @@ var (
 	keyboardState [256]byte
 	mouseX        float32
 	mouseY        float32
-	mouseButton   suslik.Mouse
+	mouseButton   suslik.Key
 	mouseAction   suslik.Action
 )
 
@@ -29,7 +29,12 @@ func (input *Input) MapAction(name string, action suslik.Action, keys ...suslik.
 	input.Actions[name] = Bind{action, keys}
 }
 
-func (input *Input) GetAction(name string) bool {
+func (input *Input) MapAxis(name string) {
+	// TODO
+	// return 0
+}
+
+func (input *Input) Action(name string) bool {
 	b := input.Actions[name]
 	for _, key := range b.Keys {
 		if keyboardState[key] != byte(b.Action) {
@@ -39,12 +44,12 @@ func (input *Input) GetAction(name string) bool {
 	return true
 }
 
-func (input *Input) GetAxis(name string) float32 {
+func (input *Input) Axis(name string) float32 {
 	// TODO
 	return 0
 }
 
-func (input *Input) GetMouse(name string) (x, y float32, button suslik.Mouse, action suslik.Action) {
+func (input *Input) MouseState(name string) (x, y float32, button suslik.Key, action suslik.Action) {
 	return mouseX, mouseY, mouseButton, mouseAction
 }
 
@@ -55,7 +60,7 @@ func (input *Input) Update(dt float32) {
 	mouseAction = suslik.NONE
 }
 
-func (input *Input) Mouse(x, y float32, button suslik.Mouse, action suslik.Action) {
+func (input *Input) Mouse(x, y float32, button suslik.Key, action suslik.Action) {
 	mouseX = x
 	mouseY = y
 	mouseButton = button
