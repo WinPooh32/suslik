@@ -14,14 +14,18 @@ func MakeTimer() Timer {
 }
 
 func (t *Timer) Start() {
-	t.ActiveDuration += t.InactiveBegin.Sub(t.Begin)
-	t.Begin = time.Now()
-	t.Run = true
+	if !t.Run {
+		t.ActiveDuration += t.InactiveBegin.Sub(t.Begin)
+		t.Begin = time.Now()
+		t.Run = true
+	}
 }
 
 func (t *Timer) Stop() {
-	t.InactiveBegin = time.Now()
-	t.Run = false
+	if t.Run {
+		t.InactiveBegin = time.Now()
+		t.Run = false
+	}
 }
 
 func (t *Timer) Reset() {
