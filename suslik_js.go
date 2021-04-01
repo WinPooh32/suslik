@@ -56,6 +56,11 @@ func run(title string, width, height int, fullscreen bool, hideCursor bool) {
 		canvas.Get("style").Set("cursor", "none")
 	}
 
+	canvas.Call("addEventListener", "contextmenu", func(ev *js.Object) {
+		ev.Call("preventDefault")
+		ev.Call("stopPropagation")
+	}, false)
+
 	winWidth := js.Global.Get("innerWidth").Int()
 	winHeight := js.Global.Get("innerHeight").Int()
 	if fullscreen {
