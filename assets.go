@@ -197,10 +197,6 @@ type Sound struct {
 	*audio.Player
 }
 
-type Point struct {
-	X, Y float32
-}
-
 type Sprite struct {
 	Position Point
 	Scale    Point
@@ -236,7 +232,7 @@ func (s *Sprite) Height() float32 {
 	return s.Region.height * s.Scale.Y
 }
 
-var batchVert = ` 
+const batchVert = ` 
 attribute vec2 in_Position;
 attribute vec4 in_Color;
 attribute vec2 in_TexCoords;
@@ -256,7 +252,7 @@ void main() {
 										 0.0, 1.0);
 }`
 
-var batchFrag = `
+const batchFrag = `
 #ifdef GL_ES
 #define LOWP lowp
 precision mediump float;
@@ -271,4 +267,35 @@ uniform sampler2D uf_Texture;
 
 void main (void) {
   gl_FragColor = var_Color * texture2D(uf_Texture, var_TexCoords);
+}`
+
+const batchLineVert = ` 
+attribute vec2 in_Position;
+attribute vec4 in_Color;
+
+uniform vec2 uf_Projection;
+
+varying vec4 var_Color;
+
+const vec2 center = vec2(-1.0, 1.0);
+
+void main() {
+  var_Color = in_Color;
+	gl_Position = vec4(in_Position.x / uf_Projection.x + center.x,
+										 in_Position.y / -uf_Projection.y + center.y,
+										 0.0, 1.0);
+}`
+
+const batchLineFrag = `
+#ifdef GL_ES
+#define LOWP lowp
+precision mediump float;
+#else
+#define LOWP
+#endif
+
+varying vec4 var_Color;
+
+void main (void) {
+  gl_FragColor = var_Color;
 }`

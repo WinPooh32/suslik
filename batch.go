@@ -58,25 +58,12 @@ func NewBatch(width, height float32) *Batch {
 	batch.indexVBO = gl.CreateBuffer()
 	batch.vertexVBO = gl.CreateBuffer()
 
-	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, batch.indexVBO)
-	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, batch.indices, gl.STATIC_DRAW)
-
-	gl.BindBuffer(gl.ARRAY_BUFFER, batch.vertexVBO)
-	gl.BufferData(gl.ARRAY_BUFFER, batch.vertices, gl.DYNAMIC_DRAW)
-
 	gl.EnableVertexAttribArray(batch.inPosition)
 	gl.EnableVertexAttribArray(batch.inTexCoords)
 	gl.EnableVertexAttribArray(batch.inColor)
 
-	gl.VertexAttribPointer(batch.inPosition, 2, gl.FLOAT, false, 20, 0)
-	gl.VertexAttribPointer(batch.inTexCoords, 2, gl.FLOAT, false, 20, 8)
-	gl.VertexAttribPointer(batch.inColor, 4, gl.UNSIGNED_BYTE, true, 20, 16)
-
 	batch.projX = width / 2
 	batch.projY = height / 2
-
-	gl.Enable(gl.BLEND)
-	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
 	return batch
 }
@@ -86,7 +73,22 @@ func (b *Batch) Begin() {
 		log.Fatal("Batch.End() must be called first")
 	}
 	b.drawing = true
+
 	gl.UseProgram(b.shader)
+
+	gl.BindBuffer(gl.ELEMENT_ARRAY_BUFFER, b.indexVBO)
+	gl.BufferData(gl.ELEMENT_ARRAY_BUFFER, b.indices, gl.STATIC_DRAW)
+
+	gl.BindBuffer(gl.ARRAY_BUFFER, b.vertexVBO)
+	gl.BufferData(gl.ARRAY_BUFFER, b.vertices, gl.DYNAMIC_DRAW)
+
+	gl.VertexAttribPointer(b.inPosition, 2, gl.FLOAT, false, 20, 0)
+	gl.VertexAttribPointer(b.inTexCoords, 2, gl.FLOAT, false, 20, 8)
+	gl.VertexAttribPointer(b.inColor, 4, gl.UNSIGNED_BYTE, true, 20, 16)
+
+	gl.Enable(gl.BLEND)
+	gl.BlendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
 }
 
 func (b *Batch) End() {
