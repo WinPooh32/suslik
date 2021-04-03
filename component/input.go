@@ -4,14 +4,6 @@ import (
 	"github.com/WinPooh32/suslik"
 )
 
-var (
-	keyboardState [512]byte
-	mouseX        float32
-	mouseY        float32
-	mouseButton   suslik.Key
-	mouseAction   suslik.Action
-)
-
 type Bind struct {
 	Action suslik.Action
 	Keys   []suslik.Key
@@ -25,6 +17,12 @@ type BindAxis struct {
 type Input struct {
 	Actions map[string]Bind
 	Axes    map[string][]BindAxis
+
+	keyboard    [512]byte
+	mouseX      float32
+	mouseY      float32
+	mouseButton suslik.Key
+	mouseAction suslik.Action
 }
 
 func MakeInput() Input {
@@ -45,7 +43,7 @@ func (input *Input) MapAxis(name string, binds ...BindAxis) {
 func (input *Input) Action(name string) bool {
 	b := input.Actions[name]
 	for _, key := range b.Keys {
-		if keyboardState[key] != byte(b.Action) {
+		if input.keyboard[key] != byte(b.Action) {
 			return false
 		}
 	}
@@ -57,7 +55,7 @@ func (input *Input) Axis(name string) float32 {
 	var binds = input.Axes[name]
 
 	for _, b := range binds {
-		if keyboardState[b.Key] != byte(suslik.NONE) {
+		if input.keyboard[b.Key] != byte(suslik.NONE) {
 			sum += b.Value
 		}
 	}
@@ -65,26 +63,26 @@ func (input *Input) Axis(name string) float32 {
 }
 
 func (input *Input) MouseState(name string) (x, y float32, button suslik.Key, action suslik.Action) {
-	return mouseX, mouseY, mouseButton, mouseAction
+	return input.mouseX, input.mouseY, input.mouseButton, input.mouseAction
 }
 
 func (input *Input) Update(dt float32) {
-	for i := range keyboardState {
-		switch keyboardState[i] {
+	for i := range input.keyboard {
+		switch input.keyboard[i] {
 		case byte(suslik.PRESS):
-			keyboardState[i] = byte(suslik.REPEAT)
+			input.keyboard[i] = byte(suslik.REPEAT)
 		case byte(suslik.RELEASE):
-			keyboardState[i] = byte(suslik.NONE)
+			input.keyboard[i] = byte(suslik.NONE)
 		}
 	}
-	mouseAction = suslik.NONE
+	input.mouseAction = suslik.NONE
 }
 
 func (input *Input) Mouse(x, y float32, button suslik.Key, action suslik.Action) {
-	mouseX = x
-	mouseY = y
-	mouseButton = button
-	mouseAction = action
+	input.mouseX = x
+	input.mouseY = y
+	input.mouseButton = button
+	input.mouseAction = action
 }
 
 func (input *Input) Scroll(amount float32) {
@@ -92,5 +90,5 @@ func (input *Input) Scroll(amount float32) {
 }
 
 func (input *Input) Key(key suslik.Key, modifier suslik.Modifier, action suslik.Action) {
-	keyboardState[key] = byte(action)
+	input.keyboard[key] = byte(action)
 }
