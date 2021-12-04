@@ -3,6 +3,7 @@ package suslik
 import (
 	"log"
 	"path"
+	"strings"
 
 	"github.com/WinPooh32/suslik/audio"
 	"github.com/WinPooh32/suslik/math"
@@ -32,7 +33,7 @@ func NewLoader() *Loader {
 }
 
 func (l *Loader) Add(name, url string) {
-	kind := path.Ext(url)
+	kind := strings.ToLower(path.Ext(url))
 	l.resources = append(l.resources, Resource{kind, name, url})
 }
 
