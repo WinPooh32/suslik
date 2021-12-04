@@ -15,6 +15,8 @@ type BindAxis struct {
 }
 
 type Input struct {
+	suslik.Game
+
 	Actions map[string]Bind
 	Axes    map[string][]BindAxis
 
@@ -25,8 +27,8 @@ type Input struct {
 	mouseAction suslik.Action
 }
 
-func MakeInput() Input {
-	return Input{
+func NewInput() *Input {
+	return &Input{
 		Actions: map[string]Bind{},
 		Axes:    map[string][]BindAxis{},
 	}
