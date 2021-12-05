@@ -1,3 +1,4 @@
+//go:build !js
 // +build !js
 
 package suslik
@@ -51,7 +52,9 @@ func run(title string, width, height int, fullscreen bool, hideCursor bool) {
 	glfw.WindowHint(glfw.ContextVersionMajor, 2)
 	glfw.WindowHint(glfw.ContextVersionMinor, 1)
 
-	window, err := glfw.CreateWindow(width, height, title, monitor, nil)
+	var err error
+
+	window, err = glfw.CreateWindow(width, height, title, monitor, nil)
 	fatalErr(err)
 	window.MakeContextCurrent()
 
@@ -124,17 +127,15 @@ func run(title string, width, height int, fullscreen bool, hideCursor bool) {
 	Files.Load(func() {})
 	responder.Setup()
 
-	shouldClose := window.ShouldClose()
-	for !shouldClose {
+	for !window.ShouldClose() {
 		responder.Update(Time.Delta())
 		gl.Clear(gl.COLOR_BUFFER_BIT)
 		responder.Render()
 		window.SwapBuffers()
 		glfw.PollEvents()
 		Time.Tick()
-
-		shouldClose = window.ShouldClose()
 	}
+
 	window.Destroy()
 	glfw.Terminate()
 	responder.Close()

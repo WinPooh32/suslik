@@ -23,9 +23,5 @@ func (g *Game) Render()                                       {}
 func (g *Game) Resize(w, h float32)                           {}
 func (g *Game) Mouse(x, y float32, button Key, action Action) {}
 func (g *Game) Scroll(amount float32)                         {}
-func (g *Game) Key(key Key, modifier Modifier, action Action) {
-	if key == BoardEscape {
-		Exit()
-	}
-}
-func (g *Game) Type(char rune) {}
+func (g *Game) Key(key Key, modifier Modifier, action Action) {}
+func (g *Game) Type(char rune)                                {}
