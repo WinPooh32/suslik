@@ -94,6 +94,18 @@ func (animator *Animator) Stop(name string) {
 	}
 }
 
+func (animator *Animator) SetFrame(name string, n int) {
+	if _, ok := animator.acts[name]; ok {
+		animator.acts[name].control.SetFrame(n)
+	}
+}
+
+func (animator *Animator) ResetTime(name string) {
+	if _, ok := animator.acts[name]; ok {
+		animator.acts[name].control.ResetTime()
+	}
+}
+
 func (animator *Animator) SetFrameTime(name string, dur time.Duration) {
 	if _, ok := animator.acts[name]; ok {
 		animator.acts[name].control.SetDelay(dur)

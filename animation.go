@@ -45,6 +45,16 @@ func (anim *Animation) GetFrame() int {
 	return anim.Current
 }
 
+func (anim *Animation) SetFrame(n int) {
+	if n > 0 && n < anim.TotalFrames {
+		anim.Current = n
+	}
+}
+
+func (anim *Animation) ResetTime() {
+	anim.Timer.Reset()
+}
+
 func (anim *Animation) GetDelay() time.Duration {
 	return anim.Delay
 }
