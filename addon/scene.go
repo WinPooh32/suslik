@@ -201,7 +201,7 @@ func (world *World) Delete(id uint) {
 			for _, generic := range object.Children {
 				child := generic.Base()
 				child.Deleted = true
-				world.Delete(id)
+				world.Delete(child.ID)
 			}
 		}
 	}
