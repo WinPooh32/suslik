@@ -43,7 +43,10 @@ func (input *Input) MapAxis(name string, binds ...BindAxis) {
 }
 
 func (input *Input) Action(name string) bool {
-	b := input.Actions[name]
+	b, ok := input.Actions[name]
+	if !ok {
+		return false
+	}
 	for _, key := range b.Keys {
 		if input.keyboard[key] != byte(b.Action) {
 			return false
